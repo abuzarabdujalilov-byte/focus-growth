@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>FOCUS — Student Growth System</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">F.</div>
+      <div><div class="brand-name">FOCUS</div><div class="brand-caption">STUDENT GROWTH SYSTEM</div></div>
+    </div>
+    <div class="nav-label">Workspace</div>
+    <nav class="nav" id="nav" aria-label="Main navigation">
+      <button class="active" data-view="dashboard"><span class="nav-icon" aria-hidden="true">⌂</span> Overview</button>
+      <button data-view="tasks"><span class="nav-icon" aria-hidden="true">☷</span> Tasks</button>
+      <button data-view="habits"><span class="nav-icon" aria-hidden="true">↻</span> Habits</button>
+      <button data-view="goals"><span class="nav-icon" aria-hidden="true">◎</span> Goals</button>
+      <button data-view="journal"><span class="nav-icon" aria-hidden="true">▤</span> Journal</button>
+      <button data-view="toolkit"><span class="nav-icon" aria-hidden="true">⌘</span> Toolkit</button>
+      <button data-view="settings"><span class="nav-icon" aria-hidden="true">⚙</span> Data</button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="storage-status"><span class="status-dot" id="statusDot"></span><div><strong id="storageTitle">Checking local storage…</strong><span id="storageText">Your data stays in this browser.</span></div></div>
+      <div class="sidebar-note">A useful system, not another source of pressure.</div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div>
+        <div class="kicker">STUDENT WORKSPACE / <span id="topSection">OVERVIEW</span></div>
+        <h1 id="pageTitle">Make room for what matters.</h1>
+        <p class="subtitle" id="pageSubtitle">A clear plan for learning, building useful habits, and moving forward one step at a time.</p>
+      </div>
+      <div class="top-actions">
+        <div class="date-label" id="todayLabel"></div>
+        <button class="btn btn-primary" id="quickAdd">＋ New task</button>
+      </div>
+    </div>
+
+    <div class="storage-banner" id="storageBanner" role="alert">Browser storage is unavailable. Changes may not survive a refresh. Try opening this file in a normal browser tab or using a local web server.</div>
+
+    <!-- OVERVIEW -->
+    <section class="section active" id="view-dashboard">
+      <div class="focus-block">
+        <div>
+          <div class="kicker">YOUR NEXT STEP</div>
+          <h2 id="focusHeading">Start with one useful action.</h2>
+          <p id="focusDescription">Choose a task that moves something important forward. You do not need to fix everything today.</p>
+          <div class="progress"><div class="progress-fill" id="todayProgress"></div></div>
+        </div>
+        <div class="focus-side">
+          <div class="focus-count"><strong id="todayCount">0 / 0</strong>tasks complete today</div>
+          <button class="btn btn-primary" id="focusAdd">Add a task <span aria-hidden="true">↗</span></button>
+        </div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">Open tasks</div><div class="metric-value" id="statLeft">0</div><div class="metric-note">Still on your list</div></div>
+        <div class="metric"><div class="metric-label">Habits today</div><div class="metric-value" id="statHabits">0 / 0</div><div class="metric-note">Small actions count</div></div>
+        <div class="metric"><div class="metric-label">Active goals</div><div class="metric-value" id="statGoals">0</div><div class="metric-note">Keep the direction clear</div></div>
+      </div>
+      <div class="overview-grid">
+        <div class="stack">
+          <section class="panel">
+            <div class="panel-head"><div><h2 class="panel-title">Today's priorities</h2><div class="panel-description">Tasks due today, plus overdue work that needs attention.</div></div><button class="text-button" data-goto="tasks">All tasks ↗</button></div>
+            <div class="task-list" id="dashboardTasks"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><div><h2 class="panel-title">Quick reflection</h2><div class="panel-description">One honest sentence is enough.</div></div><span class="pill">DAILY</span></div>
+            <textarea class="inline-note" id="quickReflection" maxlength="1200" placeholder="What did you learn, notice, or do well today?"></textarea>
+            <div class="note-footer"><small id="reflectionStatus">Saved only in this browser.</small><button class="btn btn-small" id="saveReflection">Save reflection</button></div>
+          </section>
+        </div>
+        <div class="stack overview-side">
+          <section class="panel">
+            <div class="panel-head"><div><h2 class="panel-title">Habit check-in</h2><div class="panel-description">Consistency beats intensity.</div></div><button class="text-button" data-goto="habits">Manage ↗</button></div>
+            <div class="habit-list" id="dashboardHabits"></div>
+            <div style="margin-top:14px"><button class="btn btn-quiet btn-small" id="addHabitDashboard">＋ Add habit</button></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><div><h2 class="panel-title">Current goals</h2><div class="panel-description">Progress is a direction, not a judgment.</div></div><button class="text-button" data-goto="goals">View all ↗</button></div>
+            <div id="dashboardGoals"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- TASKS -->
+    <section class="section" id="view-tasks">
+      <div class="section-heading"><div><h2>Tasks</h2><p>Capture work, choose a priority, and make the next action clear.</p></div><button class="btn btn-primary" id="addTask">＋ New task</button></div>
+      <div class="toolbar">
+        <input class="control search" id="taskSearch" type="search" placeholder="Search tasks…" aria-label="Search tasks">
+        <select class="control" id="taskFilter" aria-label="Filter tasks"><option value="all">All tasks</option><option value="open">Open</option><option value="today">Due today</option><option value="overdue">Overdue</option><option value="done">Completed</option></select>
+        <select class="control" id="taskCategory" aria-label="Filter by category"><option value="all">All subjects</option><option>Study</option><option>Thinking</option><option>Health</option><option>Relationships</option><option>Personal</option><option>Projects</option></select>
+      </div>
+      <div class="task-list" id="taskList"></div>
+    </section>
+
+    <!-- HABITS -->
+    <section class="section" id="view-habits">
+      <div class="section-heading"><div><h2>Habits</h2><p>Make good actions small enough to repeat on ordinary days.</p></div><button class="btn btn-primary" id="addHabit">＋ New habit</button></div>
+      <div class="panel"><div class="panel-head"><div><h2 class="panel-title">Your habits</h2><div class="panel-description">Check in once a day. No streak pressure.</div></div><span class="pill" id="habitSummary">0 DONE TODAY</span></div><div class="habit-list" id="habitList"></div></div>
+    </section>
+
+    <!-- GOALS -->
+    <section class="section" id="view-goals">
+      <div class="section-heading"><div><h2>Goals</h2><p>Turn a broad ambition into a clear next step.</p></div><button class="btn btn-primary" id="addGoal">＋ New goal</button></div>
+      <div class="cards" id="goalList"></div>
+    </section>
+
+    <!-- JOURNAL -->
+    <section class="section" id="view-journal">
+      <div class="section-heading"><div><h2>Journal</h2><p>Keep useful lessons, questions, and reflections in one place.</p></div><button class="btn btn-primary" id="addEntry">＋ New entry</button></div>
+      <div class="cards" id="journalList"></div>
+    </section>
+
+    <!-- TOOLKIT -->
+    <section class="section" id="view-toolkit">
+      <div class="section-heading"><div><h2>Student toolkit</h2><p>Practical methods for learning and thinking. Use what helps; ignore what doesn't.</p></div></div>
+      <div class="tool-grid">
+        <article class="tool-card"><div class="tool-index">01 / LEARNING</div><h3>Active recall</h3><p>Retrieve information from memory before looking at the answer.</p><ul><li>Read a small section.</li><li>Close the source and explain it in your own words.</li><li>Check what you missed, then retry later.</li></ul></article>
+        <article class="tool-card"><div class="tool-index">02 / REASONING</div><h3>Think in steps</h3><p>Make your reasoning visible so you can test it.</p><ul><li>State the question precisely.</li><li>Separate known facts from assumptions.</li><li>Write the next step and why it follows.</li></ul></article>
+        <article class="tool-card"><div class="tool-index">03 / FOCUS</div><h3>Single-task session</h3><p>Reduce friction before starting instead of relying on motivation.</p><ul><li>Choose one finishable task.</li><li>Put distractions out of reach.</li><li>Work for 20–30 minutes, then take a short break.</li></ul></article>
+        <article class="tool-card"><div class="tool-index">04 / REVIEW</div><h3>Weekly reset</h3><p>Use evidence from the week to adjust your plan.</p><ul><li>What actually moved forward?</li><li>What created unnecessary friction?</li><li>What is one realistic priority for next week?</li></ul></article>
+        <article class="tool-card"><div class="tool-index">05 / MEMORY</div><h3>Spaced practice</h3><p>Revisit important ideas over time, not just once in a long session.</p><ul><li>Review after a day.</li><li>Review again a few days later.</li><li>Spend more time on what you cannot recall.</li></ul></article>
+        <article class="tool-card"><div class="tool-index">06 / WELLBEING</div><h3>Protect the basics</h3><p>Learning works better when your routine is sustainable.</p><ul><li>Keep sleep and breaks realistic.</li><li>Leave room for friends and family.</li><li>Adjust the plan when your workload changes.</li></ul></article>
+      </div>
+    </section>
+
+    <!-- DATA & SETTINGS -->
+    <section class="section" id="view-settings">
+      <div class="section-heading"><div><h2>Data & settings</h2><p>Your information is stored locally in this browser. Optionally back it up to a GitHub repository.</p></div></div>
+
+      <section class="panel">
+        <div class="settings-list">
+          <div class="settings-row"><div><strong>Storage status</strong><p id="settingsStorage">Checking whether browser storage is available.</p></div><span class="pill" id="storagePill">CHECKING</span></div>
+          <div class="settings-row"><div><strong>Export a backup</strong><p>Download your tasks, habits, goals, and journal as a JSON file.</p></div><button class="btn" id="exportData">Export data</button></div>
+          <div class="settings-row"><div><strong>Import a backup</strong><p>Restore a previously exported JSON file. This replaces current data.</p></div><button class="btn" id="importData">Import backup</button><input type="file" id="importFile" accept=".json,application/json" hidden></div>
+          <div class="settings-row"><div><strong>Restore starter habits</strong><p>Add a few optional starter habits without duplicating existing ones.</p></div><button class="btn" id="restoreHabits">Restore habits</button></div>
+          <div class="settings-row"><div><strong>Clear local data</strong><p>Permanently remove all tasks, habits, goals, journal entries, and reflections in this browser. Export first if you may need them.</p></div><button class="btn btn-danger" id="clearData">Clear data</button></div>
+        </div>
+      </section>
+
+      <section class="panel" id="githubPanel">
+        <div class="panel-head">
+          <div><h2 class="panel-title">GitHub backup &amp; sync</h2><div class="panel-description">Push your data to a repository as a JSON file, or pull it back on another device.</div></div>
+          <span class="pill" id="ghPill">NOT CONNECTED</span>
+        </div>
+        <form class="gh-form" id="ghForm" autocomplete="off">
+          <div class="gh-field"><label for="ghOwner">Owner (user or organization)</label><input id="ghOwner" name="owner" type="text" placeholder="your-username" spellcheck="false"></div>
+          <div class="gh-field"><label for="ghRepo">Repository</label><input id="ghRepo" name="repo" type="text" placeholder="focus-data" spellcheck="false"></div>
+          <div class="gh-field"><label for="ghBranch">Branch</label><input id="ghBranch" name="branch" type="text" placeholder="main" spellcheck="false"></div>
+          <div class="gh-field"><label for="ghPath">File path in repository</label><input id="ghPath" name="path" type="text" placeholder="focus-data.json" spellcheck="false"></div>
+          <div class="gh-field full"><label for="ghToken">Personal access token</label><input id="ghToken" name="token" type="password" placeholder="github_pat_…" spellcheck="false" autocomplete="new-password"><small>Use a fine-grained token limited to this one repository with “Contents: Read and write”.</small></div>
+          <label class="check-row full"><input type="checkbox" id="ghRemember"> Remember the token in this browser (otherwise it is forgotten when the tab closes)</label>
+        </form>
+        <div class="gh-actions">
+          <button class="btn btn-primary" id="ghSave" type="button">Save settings</button>
+          <button class="btn" id="ghTest" type="button">Test connection</button>
+          <button class="btn" id="ghPush" type="button">Push to GitHub ↑</button>
+          <button class="btn" id="ghPull" type="button">Pull from GitHub ↓</button>
+          <button class="btn btn-danger" id="ghForget" type="button">Forget settings</button>
+        </div>
+        <div class="gh-status" id="ghStatus" role="status" aria-live="polite">Not connected. Fill in the details above and choose “Test connection”.</div>
+        <ol class="gh-steps">
+          <li>Create a repository on GitHub (private is recommended for personal data).</li>
+          <li>Create a fine-grained token at <code>github.com/settings/personal-access-tokens</code> for that repository with <strong>Contents: Read and write</strong>.</li>
+          <li>Enter the details above, test the connection, then push. Pull restores the file on another device.</li>
+        </ol>
+      </section>
+
+      <p class="privacy-note">Privacy note: anyone with access to this browser profile may be able to access this data. Do not store passwords or sensitive information here. A remembered GitHub token is stored in this browser in plain text, so only use a narrowly scoped token.</p>
+    </section>
+  </main>
+</div>
+
+<div class="modal-wrap" id="modalWrap" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <h2 id="modalTitle">Create item</h2><p class="modal-intro" id="modalIntro">Add the details you need. You can change them later.</p>
+    <form id="modalForm">
+      <div class="form-grid" id="formFields"></div>
+      <div class="form-error" id="formError" role="alert"></div>
+      <div class="modal-actions"><button type="button" class="btn" id="cancelModal">Cancel</button><button type="submit" class="btn btn-primary" id="submitModal">Save item</button></div>
+    </form>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="github-sync.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
